@@ -1,142 +1,225 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Interactive Birthday Wish</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     body {
-      background-color: #f7e3d0;
+      background-color: #121212;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
+      font-family: 'Montserrat', sans-serif;
     }
 
-    .card-container {
-      width: 100%;
-      max-width: 450px;
-      min-height: 550px;
-      background: linear-gradient(135deg, #fff0ed 0%, #ffdada 100%);
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    /* Card Frame */
+    .card-frame {
+      width: 360px;
+      height: 640px;
+      background: linear-gradient(180deg, #fceae6 0%, #f7dcd5 100%);
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 2rem;
-      position: relative;
-      overflow: hidden;
-      text-align: center;
     }
 
-    .sub-text {
+    /* Top Subtitle */
+    .top-subtext {
       position: absolute;
-      top: 20px;
-      font-size: 0.9rem;
-      color: #a88a8a;
+      top: 35px;
+      font-size: 0.85rem;
+      color: #9e7f7b;
       font-style: italic;
+      letter-spacing: 0.5px;
+      z-index: 5;
     }
 
-    .interactive-wrapper {
+    /* Pull Container */
+    .pull-container {
+      position: absolute;
+      top: 260px;
       display: flex;
       flex-direction: column;
       align-items: center;
       cursor: grab;
       user-select: none;
-      transition: transform 0.2s ease;
+      z-index: 10;
+      transition: opacity 0.4s ease;
     }
 
-    .interactive-wrapper:active {
+    .pull-container:active {
       cursor: grabbing;
     }
 
-    .heart {
-      font-size: 4rem;
-      filter: drop-shadow(0 4px 10px rgba(230, 80, 100, 0.4));
-      animation: pulse 1.5s infinite;
+    /* Initial Heart Icon */
+    .heart-icon {
+      width: 30px;
+      height: 30px;
+      background-color: #e57373;
+      transform: rotate(-45deg);
+      position: relative;
+      box-shadow: 0 4px 10px rgba(229, 115, 115, 0.4);
     }
 
-    /* Arrow Style */
+    .heart-icon::before,
+    .heart-icon::after {
+      content: "";
+      width: 30px;
+      height: 30px;
+      background-color: #e57373;
+      border-radius: 50%;
+      position: absolute;
+    }
+
+    .heart-icon::before {
+      top: -15px;
+      left: 0;
+    }
+
+    .heart-icon::after {
+      left: 15px;
+      top: 0;
+    }
+
+    /* Down Arrow */
     .arrow-down {
-      font-size: 1.5rem;
-      color: #e64c65;
-      margin: 4px 0;
+      margin-top: 25px;
+      color: #d88d8d;
+      font-size: 1rem;
       animation: bounce 1.2s infinite;
     }
 
-    .pull-instruction {
+    .pull-text {
       margin-top: 5px;
-      font-size: 0.75rem;
+      font-size: 0.65rem;
+      color: #a87d7d;
       letter-spacing: 2px;
-      color: #b07070;
-      font-weight: 600;
+      font-weight: 500;
     }
 
-    .wish-content {
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(20px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
+    /* Birthday Wish Container */
+    .wish-container {
+      position: absolute;
+      top: 35px;
+      width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 100%;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.8s ease 0.3s;
+      z-index: 5;
     }
 
-    .wish-content.show {
+    .wish-container.active {
       opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
     }
 
-    .make-wish {
-      font-size: 0.85rem;
-      color: #b07070;
+    .make-a-wish {
+      font-size: 0.8rem;
+      color: #a3827e;
       font-style: italic;
     }
 
-    .title {
-      font-size: 2.2rem;
-      color: #d6335c;
-      margin: 5px 0;
-      font-weight: 700;
+    .main-title {
+      font-family: 'Great Vibes', cursive;
+      font-size: 3.8rem;
+      color: #d32f2f;
+      line-height: 1.1;
+      margin-top: 5px;
+      text-align: center;
     }
 
-    .subtitle {
-      font-size: 0.9rem;
-      color: #7d5050;
-      margin-bottom: 15px;
+    .celebrate-text {
+      font-size: 0.75rem;
+      color: #8c6b67;
+      margin-top: 5px;
     }
 
-    #treeCanvas {
-      max-width: 100%;
-      height: auto;
-    }
-
-    .date-badge {
-      margin-top: 15px;
-      padding: 6px 16px;
-      background-color: #ffffff90;
-      border: 1px solid #ffb6c1;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      color: #d6335c;
-      font-weight: 600;
+    /* Date Tag */
+    .date-tag {
+      position: absolute;
+      bottom: 25px;
+      font-size: 0.75rem;
+      color: #b08b87;
       letter-spacing: 1px;
+      z-index: 5;
+      opacity: 0;
+      transition: opacity 0.8s ease 1s;
     }
 
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
+    .date-tag.active {
+      opacity: 1;
+    }
+
+    /* Growing Tree Container */
+    .tree-container {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 380px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      z-index: 2;
+    }
+
+    .trunk {
+      width: 4px;
+      height: 0;
+      background-color: #6d4c41;
+      position: relative;
+      transition: height 1.5s ease-in-out;
+      border-radius: 2px;
+    }
+
+    .trunk.grow {
+      height: 160px;
+    }
+
+    /* Heart Canopy */
+    .canopy {
+      position: absolute;
+      top: -120px;
+      left: 50%;
+      transform: translateX(-50%) scale(0);
+      width: 220px;
+      height: 200px;
+      transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.27) 1.2s;
+    }
+
+    .canopy.bloom {
+      transform: translateX(-50%) scale(1);
+    }
+
+    /* Individual Leaf Hearts */
+    .leaf-heart {
+      position: absolute;
+      background-color: #ef5350;
+      transform: rotate(-45deg);
+      border-radius: 2px;
+    }
+
+    .leaf-heart::before,
+    .leaf-heart::after {
+      content: "";
+      position: absolute;
+      background-color: #ef5350;
+      border-radius: 50%;
     }
 
     @keyframes bounce {
@@ -147,103 +230,135 @@
 </head>
 <body>
 
-  <div class="card-container">
-    <div class="sub-text">a little something, for you</div>
+  <div class="card-frame">
+    <div class="top-subtext" id="topSubtext">a little something, for you</div>
 
-    <!-- Heart & Arrow Interactive Element -->
-    <div class="interactive-wrapper" id="heartWrapper">
-      <div class="heart" id="pullHeart">❤️</div>
+    <!-- Pull Down Interactive Button -->
+    <div class="pull-container" id="pullContainer">
+      <div class="heart-icon"></div>
       <div class="arrow-down">↓</div>
-      <span class="pull-instruction">PULL & RELEASE</span>
+      <div class="pull-text">PULL & RELEASE</div>
     </div>
 
-    <!-- Wish Content (Initially Hidden) -->
-    <div class="wish-content" id="wishContent">
-      <div class="make-wish">make a wish...</div>
-      <h1 class="title">Happy Birthday</h1>
-      <p class="subtitle">to someone worth celebrating</p>
-      
-      <!-- Canvas for Tree Animation -->
-      <canvas id="treeCanvas" width="400" height="300"></canvas>
-      
-      <div class="date-badge">27 • 11 • 2010</div>
+    <!-- Hidden Birthday Wish Text -->
+    <div class="wish-container" id="wishContainer">
+      <div class="make-a-wish">make a wish...</div>
+      <h1 class="main-title">Happy<br>Birthday</h1>
+      <div class="celebrate-text">to someone worth celebrating</div>
     </div>
+
+    <!-- Growing Tree Structure -->
+    <div class="tree-container">
+      <div class="trunk" id="trunk">
+        <div class="canopy" id="canopy"></div>
+      </div>
+    </div>
+
+    <!-- Custom Birthdate -->
+    <div class="date-tag" id="dateTag">here's to a year that blooms</div>
   </div>
 
   <script>
-    const heartWrapper = document.getElementById('heartWrapper');
-    const wishContent = document.getElementById('wishContent');
-    const canvas = document.getElementById('treeCanvas');
-    const ctx = canvas.getContext('2d');
+    const pullContainer = document.getElementById('pullContainer');
+    const wishContainer = document.getElementById('wishContainer');
+    const topSubtext = document.getElementById('topSubtext');
+    const trunk = document.getElementById('trunk');
+    const canopy = document.getElementById('canopy');
+    const dateTag = document.getElementById('dateTag');
 
-    let isDragging = false;
     let startY = 0;
+    let isDragging = false;
 
-    // Pull down gesture detection
-    heartWrapper.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      startY = e.clientY;
-    });
+    // Generate Heart Leaves for Tree Canopy
+    function createTreeLeaves() {
+      const colors = ['#e57373', '#ef5350', '#f44336', '#e91e63', '#ff80ab', '#ff4081'];
+      const totalLeaves = 80;
 
-    window.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      const deltaY = e.clientY - startY;
-      if (deltaY > 0 && deltaY < 120) {
-        heartWrapper.style.transform = `translateY(${deltaY}px)`;
+      for (let i = 0; i < totalLeaves; i++) {
+        const leaf = document.createElement('div');
+        leaf.className = 'leaf-heart';
+        
+        // Random positioning in a heart/circle shape
+        const angle = Math.random() * Math.PI * 2;
+        const radius = Math.random() * 80;
+        const x = Math.cos(angle) * radius + 100;
+        const y = Math.sin(angle) * (radius * 0.8) + 80;
+        
+        const size = Math.random() * 12 + 8;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+
+        leaf.style.left = `${x}px`;
+        leaf.style.top = `${y}px`;
+        leaf.style.width = `${size}px`;
+        leaf.style.height = `${size}px`;
+        leaf.style.backgroundColor = color;
+
+        // Custom style for pseudo elements using dynamic CSS injection
+        const style = document.createElement('style');
+        style.innerHTML = `
+          .leaf-${i}::before, .leaf-${i}::after {
+            background-color: ${color} !important;
+            width: ${size}px !important;
+            height: ${size}px !important;
+          }
+          .leaf-${i}::before { top: -${size/2}px !important; }
+          .leaf-${i}::after { left: ${size/2}px !important; }
+        `;
+        document.head.appendChild(style);
+        leaf.classList.add(`leaf-${i}`);
+
+        canopy.appendChild(leaf);
       }
-    });
+    }
 
-    window.addEventListener('mouseup', (e) => {
+    createTreeLeaves();
+
+    // Mouse and Touch Events
+    function startDrag(y) {
+      isDragging = true;
+      startY = y;
+    }
+
+    function moveDrag(y) {
+      if (!isDragging) return;
+      const deltaY = y - startY;
+      if (deltaY > 0 && deltaY < 100) {
+        pullContainer.style.transform = `translateY(${deltaY}px)`;
+      }
+    }
+
+    function endDrag(y) {
       if (!isDragging) return;
       isDragging = false;
-      const deltaY = e.clientY - startY;
-      
-      if (deltaY > 50) {
-        heartWrapper.style.opacity = '0';
+      const deltaY = y - startY;
+
+      if (deltaY > 40) {
+        // Trigger Animation
+        pullContainer.style.opacity = '0';
+        pullContainer.style.pointerEvents = 'none';
+        topSubtext.style.opacity = '0';
+
         setTimeout(() => {
-          heartWrapper.style.display = 'none';
-          wishContent.classList.add('show');
-          growTree();
+          wishContainer.classList.add('active');
+          trunk.classList.add('grow');
+          canopy.classList.add('bloom');
+          dateTag.classList.add('active');
+          dateTag.innerText = "27 • 11 • 2010"; // Your customized date
         }, 300);
       } else {
-        heartWrapper.style.transform = 'translateY(0px)';
+        pullContainer.style.transform = `translateY(0px)`;
       }
-    });
-
-    // Canvas Tree Animation
-    function drawTree(startX, startY, len, angle, branchWidth) {
-      ctx.beginPath();
-      ctx.save();
-      ctx.strokeStyle = '#5a3d31';
-      ctx.lineWidth = branchWidth;
-      ctx.translate(startX, startY);
-      ctx.rotate((angle * Math.PI) / 180);
-      ctx.moveTo(0, 0);
-      ctx.lineTo(0, -len);
-      ctx.stroke();
-
-      if (len < 10) {
-        // Draw leaf hearts
-        ctx.beginPath();
-        ctx.arc(0, -len, 4, 0, Math.PI * 2);
-        ctx.fillStyle = '#e64c65';
-        ctx.fill();
-        ctx.restore();
-        return;
-      }
-
-      setTimeout(() => {
-        drawTree(0, -len, len * 0.75, angle + 15, branchWidth * 0.7);
-        drawTree(0, -len, len * 0.75, angle - 15, branchWidth * 0.7);
-      }, 50);
-
-      ctx.restore();
     }
 
-    function growTree() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawTree(200, 280, 60, 0, 8);
-    }
+    // Mouse Events
+    pullContainer.addEventListener('mousedown', (e) => startDrag(e.clientY));
+    window.addEventListener('mousemove', (e) => moveDrag(e.clientY));
+    window.addEventListener('mouseup', (e) => endDrag(e.clientY));
+
+    // Touch Events for Mobile
+    pullContainer.addEventListener('touchstart', (e) => startDrag(e.touches[0].clientY));
+    window.addEventListener('touchmove', (e) => moveDrag(e.touches[0].clientY));
+    window.addEventListener('touchend', (e) => endDrag(e.changedTouches[0].clientY));
   </script>
 </body>
 </html>
