@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interactive Birthday Wish</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="card-container">
+    <div class="sub-text">a little something, for you</div>
+
+    <div class="interactive-wrapper" id="heartWrapper">
+      <div class="heart" id="pullHeart">❤️</div>
+      <span class="pull-instruction">PULL & RELEASE</span>
+    </div>
+
+    <div class="wish-content" id="wishContent">
+      <div class="make-wish">make a wish...</div>
+      <h1 class="title">Happy Birthday</h1>
+      <p class="subtitle">to someone worth celebrating</p>
+      
+      <canvas id="treeCanvas" width="400" height="300"></canvas>
+      
+      <div class="date-badge">27 • 11 • 2010</div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
